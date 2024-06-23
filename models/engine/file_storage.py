@@ -13,21 +13,15 @@ class FileStorage:
         Returns a list of objects of one type, if class is provided
         or all objects if cls is None.
         """
-        # retrieve all objects
-        objs_dict = FileStorage.__objects
-
-        if cls is None:
-            return objs_dict
-        else:
-            # create empty object dict
+        if cls is not None:
+            # retrieve all objects
             cls_objects = {}
-
-            for key, obj in objs_dict.items():
+            for key, obj in self.__objects.items():
                 if isinstance(obj, cls):
                     # if cls is found add item to cls_objects
                     cls_objects[key] = obj
-
             return cls_objects
+        return self.__objects
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
@@ -69,14 +63,7 @@ class FileStorage:
     def delete(self, obj=None):
         """Deletes an object from __objects"""
         # handle: obj is None
-        if obj is None:
-            pass
-
-        # get the object key
-        obj_key = "{}.{}".format(type(obj).__name__, obj.id)
-
-        # retrieve objects dict from __objects
-        objs_dict = self.all()
-
-        if obj_key in objs_dict:
-            del objs_dict[obj_key]
+        if obj is not None:
+            obj_key = "{}.{}".format(type(obj).__name__, obj.id)
+            if obj_key in self.__objects:
+                del self.__objects[obj_key]
