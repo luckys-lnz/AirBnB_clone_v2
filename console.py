@@ -126,9 +126,7 @@ class HBNBCommand(cmd.Cmd):
             if len(args_list) == 1:
                 new_instance = HBNBCommand.classes[args_list[0]]()
             else:
-                # create new instance
-                new_instance = HBNBCommand.classes[args_list[0]]()
-
+                attr_dict = {}
                 for item in args_list[1:]:
                     try:
                         attr_name, attr_value = item.split("=")
@@ -146,10 +144,12 @@ class HBNBCommand(cmd.Cmd):
                             # convert to int
                             attr_value = int(attr_value)
 
-                        # set new attributes to the created instance
-                        setattr(new_instance, attr_name, attr_value)
+                        # add attribute to dict
+                        attr_dict[attr_name] = attr_value
                     except (ValueError, IndexError):
                         pass
+                # create new instance
+                new_instance = HBNBCommand.classes[args_list[0]](**attr_dict)
 
         # save instance to storage
         storage.save()
