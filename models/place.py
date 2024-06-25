@@ -24,3 +24,15 @@ class Place(BaseModel, Base):
 
     user = relationship('User', back_populates='places')
     city = relationship('City', back_populates='places')
+    reviews = relationship('Review', back_populates='place',
+                           cascade='all, delete-orphan')
+
+    if models.storage_t == 'db':
+        reviews = relationship('Review', back_populates='place',
+                               cascade='all', delete-orphan)
+    else:
+        @property
+        def reviews(self):
+            """ file storage getter for relationship btwn places and review """
+            return [review for review in models.storage.all(Review).values()
+                    if review.place_id == self.id]
