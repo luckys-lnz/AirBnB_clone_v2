@@ -10,6 +10,15 @@ from sqlalchemy.orm import relationship
 storage_type = os.getenv("HBNB_TYPE_STORAGE")
 
 
+# Association table -- place_amenity
+place_amenity = Table('place_amenity', Base.metadata,
+    Column(
+        'place_id', String(60), ForeignKey('places.id'), primary_key=True)
+    Column(
+        'amenity_id', String(60), ForeignKEY('amenities.id'), primary_key=True)
+)
+
+
 class Place(BaseModel, Base):
     """ A place to stay """
     if storage_type == "db":
@@ -29,6 +38,8 @@ class Place(BaseModel, Base):
         # relationships
         reviews = relationship('Review', backref='place',
                                cascade='all, delete-orphan')
+        amenities = relationship('Amenity', secondary=place_amenity,
+                                 backref='place', viewonly=False)
     else:
         # Handle file storage
         city_id = ""
