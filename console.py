@@ -6,7 +6,7 @@ from models import storage
 from models.base_model import BaseModel
 from models.review import Review
 from models.user import User
-# from models.Amenity import Amenity
+from models.Amenity import Amenity
 from models.state import State
 from models.city import City
 from models.place import Place
@@ -21,7 +21,7 @@ class HBNBCommand(cmd.Cmd):
     classes = {
         'BaseModel': BaseModel, 'State': State, 'City': City,
         'User': User, 'Place': Place, 'Review': Review,
-        # 'Amenity': Amenity
+        'Amenity': Amenity
     }
 
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
