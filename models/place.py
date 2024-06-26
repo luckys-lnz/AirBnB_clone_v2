@@ -5,9 +5,16 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Integer, Column, String, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
 
-
 # Get storage type
 storage_type = os.getenv("HBNB_TYPE_STORAGE")
+# Relationship between amenity and place
+if storage_type == "db":
+     place_amenity = Table(
+        'place_amenity', Base.metadata,
+        Column('place_id', String(60), ForeignKey('places.id'),
+                primary_key=True, nullable=False),
+        Column('amenity_id', String(60), ForeignKey('amenities.id'),
+                primary_key=True, nullable=False))
 
 
 class Place(BaseModel, Base):
@@ -26,13 +33,7 @@ class Place(BaseModel, Base):
         latitude = Column(Float, nullable=True)
         longitude = Column(Float, nullable=True)
         amenity_ids = []
-        # Define the table for the many-to-many relationship
-        place_amenity = Table(
-            'place_amenity', Base.metadata,
-            Column('place_id', String(60), ForeignKey('places.id'),
-                   primary_key=True, nullable=False),
-            Column('amenity_id', String(60), ForeignKey('amenities.id'),
-                   primary_key=True, nullable=False))
+
         # relationships
         reviews = relationship('Review', backref='place',
                                cascade='all, delete-orphan')
