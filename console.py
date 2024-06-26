@@ -2,14 +2,14 @@
 """ Console Module """
 import cmd
 import sys
+from models import storage
 from models.base_model import BaseModel
-from models.__init__ import storage
-from models.user import User
-from models.place import Place
+# from models.review import Review
+# from models.user import User
+# from models.Amenity import Amenity
 from models.state import State
 from models.city import City
-from models.amenity import Amenity
-from models.review import Review
+# from models.place import Place
 
 
 class HBNBCommand(cmd.Cmd):
@@ -19,10 +19,11 @@ class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
 
     classes = {
-               'BaseModel': BaseModel, 'User': User, 'Place': Place,
-               'State': State, 'City': City, 'Amenity': Amenity,
-               'Review': Review
-              }
+        'BaseModel': BaseModel, 'State': State, 'City': City,
+        # 'User': User, 'Place': Place, 'Amenity': Amenity,
+        # 'Review': Review
+    }
+
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
              'number_rooms': int, 'number_bathrooms': int,
@@ -136,7 +137,7 @@ class HBNBCommand(cmd.Cmd):
                             # escape double quotes
                             attr_value = attr_value[1:-1].replace('"', '\\"')
                             # handle attr_value: replace underscores
-                            attr_name = attr_name.replace('_', ' ')
+                            attr_value = attr_value.replace('_', ' ')
                         elif '.' in attr_value:
                             # convert to float
                             attr_value = float(attr_value)
@@ -152,8 +153,8 @@ class HBNBCommand(cmd.Cmd):
                 new_instance = HBNBCommand.classes[args_list[0]](**attr_dict)
 
         # save instance to storage
-        storage.save()
         print(new_instance.id)
+        new_instance.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -226,23 +227,36 @@ class HBNBCommand(cmd.Cmd):
         print("Destroys an individual instance of a class")
         print("[Usage]: destroy <className> <objectId>\n")
 
-    def do_all(self, args):
-        """ Shows all objects, or all objects of a class"""
-        print_list = []
-
-        if args:
-            args = args.split(' ')[0]  # remove possible trailing args
-            if args not in HBNBCommand.classes:
+    def do_all(self, arg):
+        """
+        Prints all string representation of all instances based or not on
+        the class name
+        """
+        objs = storage.all()
+        objs_list = []
+        if arg:
+            # print object of the class provided
+            cls = HBNBCommand.classes.get(arg)
+            if cls:
+                for key, obj in objs.items():
+                    cls_name = key.split('.')[0]
+                    if arg == cls_name:
+                        if hasattr(obj, '_sa_instance_state'):
+                            delattr(obj, '_sa_instance_state')
+                        objs_list.append(str(obj))
+            else:
                 print("** class doesn't exist **")
-                return
-            for k, v in storage._FileStorage__objects.items():
-                if k.split('.')[0] == args:
-                    print_list.append(str(v))
         else:
-            for k, v in storage._FileStorage__objects.items():
-                print_list.append(str(v))
+            # print all objects
+            for obj in objs.values():
+                if hasattr(obj, '_sa_instance_state'):
+                    delattr(obj, '_sa_instance_state')
+                objs_list.append(str(obj))
 
-        print(print_list)
+        # print list of object
+        print("[", end="")
+        print(", ".join(objs_list), end="")
+        print("]")
 
     def help_all(self):
         """ Help information for the all command """
