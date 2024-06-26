@@ -20,9 +20,9 @@ class User(BaseModel, Base):
         password = Column(String(128), nullable=False)
         first_name = Column(String(128), nullable=True)
         last_name = Column(String(128), nullable=True)
-        places = relationship("Place", back_populates="user",
+        places = relationship("Place", backref="user",
                               cascade="all, delete-orphan")
-        reviews = relationship("Review", back_populates="users",
+        reviews = relationship("Review", backref="user",
                                cascade="all, delete-orphan")
     else:
         # Handle file storage

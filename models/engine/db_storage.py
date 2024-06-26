@@ -4,6 +4,9 @@ Module defines Database engine `DBStorage`
 """
 import os
 from models.base_model import Base
+from models.user import User
+from models.review import Review
+from models.place import Place
 from models.city import City
 from models.state import State
 from sqlalchemy import create_engine
@@ -45,7 +48,7 @@ class DBStorage:
                 objs_dict[key] = obj
         else:
             # Handle all classes
-            cls_list = [State, City]
+            cls_list = [State, City, User, Review, Place]
             for cls in cls_list:
                 for obj in self.__session.query(cls).all():
                     key = f"{type(obj).__name__}.{obj.id}"
