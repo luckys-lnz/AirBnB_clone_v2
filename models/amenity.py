@@ -4,7 +4,7 @@ import os
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
-
+from models.place import place_amenity
 
 # Get the storage type
 storage_type = os.getenv("HBNB_TYPE_STORAGE")
@@ -21,6 +21,7 @@ class Amenity(BaseModel, Base):
         # Many-to-Many relationship
         place_amenities = relationship('Place',
                                        secondary='place_amenity',
+                                       back_populates='amenities',
                                        viewonly=False)
     else:
         # Handle file storage
