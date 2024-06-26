@@ -65,16 +65,18 @@ class Place(BaseModel, Base):
         def amenities(self):
             """ Returns a list of amenities instances """
             from models import storage
-            objs_dict = storage.all()
-            place_amenities_list = []
-            for amenity_id in self.amenities_ids:
-                for obj in objs_dict.values():
-                    if obj.id == amenity_id:
-                        place_amenities_list.append(obj)
-            return place_amenities_list
+            amenity_list = []
+            # Iterate threough all the instances in the storage
+            for amenity in list(models.storage.all(Amenity).values()):
+                # Check if the current Amenity instance ID is in the
+                # amenity_ids attribute of the Place instance
+                if amenity.id in self.amenity_ids:
+                    ameniity_list.appent(amenity)
+            # returns all instaces of linked amenities
+            return amenity_list
 
         @amenities.setter
         def amenities(self, value):
             """ Sets the amenity id """
-            if isinstance(value, Amenity):
+            if type(value) is Amenity:
                 self.amenity_ids.append(value.id)
