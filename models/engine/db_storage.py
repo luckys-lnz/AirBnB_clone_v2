@@ -9,6 +9,7 @@ from models.review import Review
 from models.place import Place
 from models.city import City
 from models.state import State
+from models.amenity import Amenity
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
@@ -48,7 +49,7 @@ class DBStorage:
                 objs_dict[key] = obj
         else:
             # Handle all classes
-            cls_list = [State, City, User, Review, Place]
+            cls_list = [State, City, User, Review, Place, Amenity]
             for cls in cls_list:
                 for obj in self.__session.query(cls).all():
                     key = f"{type(obj).__name__}.{obj.id}"
