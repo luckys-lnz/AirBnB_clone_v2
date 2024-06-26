@@ -1,11 +1,36 @@
 #!/usr/bin/python3
-"""This module defines a base class for all models in our hbnb clone"""
+"""
+This module defines a base class for all models in our hbnb clone
+"""
+import os
 import uuid
 from datetime import datetime
+from sqlalchemy import Column, String, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+
+
+# Get storage type
+storage_type = os.getenv("HBNB_TYPE_STORAGE")
+if storage_type == "db":
+    Base = declarative_base()
+else:
+    Base = object
+
+
+def generate_uuid():
+    return str(uuid.uuid4())
 
 
 class BaseModel:
     """A base class for all hbnb models"""
+    if storage_type == "db":
+        id = Column(
+            String(60), primary_key=True, nullable=False,
+            default=generate_uuid)
+        created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+        updated_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+    # Handle File storage
     def __init__(self, *args, **kwargs):
         """Instantiates a new model"""
         if kwargs:
@@ -42,10 +67,6 @@ class BaseModel:
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
 
-        # avoid -- circular imports
-        from models import storage
-        storage.new(self)
-
     def __str__(self):
         """Returns a string representation of the instance"""
         cls = (str(type(self)).split('.')[-1]).split('\'')[0]
@@ -55,14 +76,27 @@ class BaseModel:
         """Updates updated_at with current time when instance is changed"""
         from models import storage
         self.updated_at = datetime.now()
+        storage.new(self)
         storage.save()
 
     def to_dict(self):
-        """Convert instance into dict format"""
-        dictionary = {}
-        dictionary.update(self.__dict__)
-        dictionary.update({'__class__':
-                          (str(type(self)).split('.')[-1]).split('\'')[0]})
-        dictionary['created_at'] = self.created_at.isoformat()
-        dictionary['updated_at'] = self.updated_at.isoformat()
-        return dictionary
+        """
+        Returns: dictionary containing all key/values of __dict__ of the
+        instance
+        """
+        obj_dict = {}
+        for key, value in self.__dict__.items():
+            if key == "created_at" or key == "updated_at":
+                obj_dict[key] = datetime.isoformat(value)
+            else:
+                obj_dict[key] = value
+        obj_dict["__class__"] = type(self).__name__
+        if '_sa_instance_state' in obj_dict:
+            del obj_dict['_sa_instance_state']
+
+        return obj_dict
+
+    def delete(self):
+        """Deletes the current instance from storage"""
+        from models import storage
+        storage.delete(self)
