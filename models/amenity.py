@@ -4,10 +4,14 @@ import os
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
-from models.place import place_amenity
+
 
 # Get the storage type
 storage_type = os.getenv("HBNB_TYPE_STORAGE")
+
+# lazy import association table
+if storage_type == "db":
+    from models.place import place_amenity
 
 
 class Amenity(BaseModel, Base):
