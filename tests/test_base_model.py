@@ -71,4 +71,3 @@ class TestBaseModel(unittest.TestCase):
         self.assertNotIn('__class__', new_obj.__dict__)
         self.assertIsInstance(new_obj.created_at, datetime)
         self.assertIsInstance(new_obj.updated_at, datetime)
-
