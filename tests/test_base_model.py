@@ -1,73 +1,99 @@
 #!/usr/bin/python3
-"""
-Module defines a test for the `BaseModel` class
-"""
-import time
-import unittest
-from datetime import datetime
+""" """
 from models.base_model import BaseModel
+import unittest
+import datetime
+from uuid import UUID
+import json
+import os
 
 
-class TestBaseModel(unittest.TestCase):
-    """
-    Test BaseModel class
-    """
+class test_basemodel(unittest.TestCase):
+    """ """
+
+    def __init__(self, *args, **kwargs):
+        """ """
+        super().__init__(*args, **kwargs)
+        self.name = 'BaseModel'
+        self.value = BaseModel
+
     def setUp(self):
-        """create object used in the test methods"""
-        self.obj = BaseModel()
+        """ """
+        pass
 
-    def test_class_attributes(self):
-        """tests instance attributes"""
-        self.assertIsInstance(self.obj.id, str)
-        self.assertIsInstance(self.obj.created_at, datetime)
-        self.assertIsInstance(self.obj.updated_at, datetime)
+    def tearDown(self):
+        try:
+            os.remove('file.json')
+        except:
+            pass
 
-    def test_str_method(self):
-        """tests __str__ method"""
-        obj_str = "[{}] ({}) {}".format(
-                  type(self.obj).__name__, self.obj.id, self.obj.__dict__)
-        self.assertEqual(str(self.obj), obj_str)
+    def test_default(self):
+        """ """
+        i = self.value()
+        self.assertEqual(type(i), self.value)
 
-    def test_save_method(self):
-        """tests save method"""
-        prev_time = self.obj.updated_at
+    def test_kwargs(self):
+        """ """
+        i = self.value()
+        copy = i.to_dict()
+        new = BaseModel(**copy)
+        self.assertFalse(new is i)
 
-        # delay execution of next line of code
-        time.sleep(1)
+    def test_kwargs_int(self):
+        """ """
+        i = self.value()
+        copy = i.to_dict()
+        copy.update({1: 2})
+        with self.assertRaises(TypeError):
+            new = BaseModel(**copy)
 
-        # update the object
-        self.obj.save()
+    def test_save(self):
+        """ Testing save """
+        i = self.value()
+        i.save()
+        key = self.name + "." + i.id
+        with open('file.json', 'r') as f:
+            j = json.load(f)
+            self.assertEqual(j[key], i.to_dict())
 
-        curr_time = self.obj.updated_at
+    def test_str(self):
+        """ """
+        i = self.value()
+        self.assertEqual(str(i), '[{}] ({}) {}'.format(self.name, i.id,
+                         i.__dict__))
 
-        self.assertNotEqual(curr_time, prev_time)
+    def test_todict(self):
+        """ """
+        i = self.value()
+        n = i.to_dict()
+        self.assertEqual(i.to_dict(), n)
 
-    def test_to_dict_method(self):
-        """tests to_dict method"""
+    def test_kwargs_none(self):
+        """ """
+        n = {None: None}
+        with self.assertRaises(TypeError):
+            new = self.value(**n)
 
-        # create a dict
-        obj_dict = self.obj.to_dict()
-        cls_name = obj_dict.get('__class__')
+    def test_kwargs_one(self):
+        """ """
+        n = {'Name': 'test'}
+        with self.assertRaises(KeyError):
+            new = self.value(**n)
 
-        self.assertIn('id', obj_dict)
-        self.assertIn('created_at', obj_dict)
-        self.assertIn('updated_at', obj_dict)
-        self.assertIn('__class__', obj_dict)
+    def test_id(self):
+        """ """
+        new = self.value()
+        self.assertEqual(type(new.id), str)
 
-        self.assertIn(cls_name, 'BaseModel')
+    def test_created_at(self):
+        """ """
+        new = self.value()
+        self.assertEqual(type(new.created_at), datetime.datetime)
 
-        self.assertIsInstance(obj_dict['created_at'], str)
-        self.assertIsInstance(obj_dict['updated_at'], str)
-
-    def test_kwargs_passed(self):
-        """tests for object created from dictionary"""
-
-        # create the dict
-        obj_dict = self.obj.to_dict()
-
-        # create object
-        new_obj = BaseModel(**obj_dict)
-
-        self.assertNotIn('__class__', new_obj.__dict__)
-        self.assertIsInstance(new_obj.created_at, datetime)
-        self.assertIsInstance(new_obj.updated_at, datetime)
+    def test_updated_at(self):
+        """ """
+        new = self.value()
+        self.assertEqual(type(new.updated_at), datetime.datetime)
+        n = new.to_dict()
+        new = BaseModel(**n)
+        self.assertFalse(new.created_at == new.updated_at)
