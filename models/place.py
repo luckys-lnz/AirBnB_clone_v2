@@ -72,14 +72,12 @@ class Place(BaseModel, Base):
             objs_dict = storage.all()
             place_amenities_list = []
             for obj in objs_dict.values():
-                if obj.id in self.amenity_ids and
-                isinstance(obj, Amenity):
+                if obj.id in self.amenity_ids and isinstance(obj, Amenity):
                     place_amenities_list.append(obj)
             return place_amenities_list
 
         @amenities.setter
         def amenities(self, obj):
             """ Sets the amenity id """
-            if isinstance(obj, Amenity) and
-            obj.id not in self.amenity_ids:
+            if isinstance(obj, Amenity) and obj.id not in self.amenity_ids:
                 self.amenity_ids.append(obj.id)
