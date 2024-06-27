@@ -20,7 +20,7 @@ class State(BaseModel, Base):
         cities = relationship(
             'City', backref='state', cascade='all, delete, delete-orphan')
     else:
-        # Handle File rage
+        # Handle File storage
         name = ""
 
         @property
