@@ -8,7 +8,7 @@ import json
 import os
 
 
-class TestBaseModel(unittest.TestCase):
+class test_basemodel(unittest.TestCase):
     """ """
 
     def __init__(self, *args, **kwargs):
@@ -24,7 +24,7 @@ class TestBaseModel(unittest.TestCase):
     def tearDown(self):
         try:
             os.remove('file.json')
-        except:
+        except FileNotFoundError:
             pass
 
     def test_default(self):
