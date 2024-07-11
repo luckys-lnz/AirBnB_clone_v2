@@ -13,7 +13,7 @@ Requirements:
     correctly generated. Otherwise, it should return None
 """
 from fabric import task
-import datetime
+from datetime import datetime
 import os
 
 
