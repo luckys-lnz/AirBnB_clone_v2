@@ -12,11 +12,12 @@ Requirements:
   - The function do_pack must return the archive path if the archive has been
     correctly generated. Otherwise, it should return None
 """
-from invoke import local
+from fabric.api import task, local
 from datetime import datetime
 import os
 
 
+@task
 def do_pack():
     """Function generates a tgz archive"""
 
