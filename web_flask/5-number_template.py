@@ -45,7 +45,7 @@ def number(n):
 def display_page(n):
     try:
         number = int(n)
-        return render_template('number.html', number=number)
+        return render_template('5-number.html', number=number)
     except ValueError:
         abort(404)
 
