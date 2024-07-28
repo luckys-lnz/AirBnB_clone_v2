@@ -18,8 +18,9 @@ Requirements:
  - Import this 7-dump to have some data
  - You must use the option strict_slashes=False in your route definition
 """
-from flask import Flask
+from flask import Flask, render_template
 from models import storage
+from models.state import State
 
 
 app = Flask(__name__)
@@ -30,7 +31,7 @@ def delete_session(exception=None):
     storage.close()
 
 
-@app.route('/state_list', strict_slashes=False)
+@app.route('/states_list', strict_slashes=False)
 def list_states():
     states = storage.all(State)
     sorted_states = sorted(states.values(), key=lambda state: state.name)
