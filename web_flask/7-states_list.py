@@ -33,9 +33,8 @@ def delete_session(exception=None):
 
 @app.route('/states_list', strict_slashes=False)
 def list_states():
-    states = storage.all(State)
-    sorted_states = sorted(states.values(), key=lambda state: state.name)
-    return render_template('7-states_list.html', states=sorted_states)
+    states = storage.all(State).values()
+    return render_template('7-states_list.html', states=states)
 
 
 if __name__ == '__main__':
