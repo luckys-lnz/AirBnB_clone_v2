@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""
+0;276;0c"""
 Script starts a Flask web application:
 Requirements:
  - Your web application must be listening on 0.0.0.0, port 5000
@@ -21,7 +21,7 @@ Requirements:
 from flask import Flask, render_template
 from models import storage
 from models.state import State
-from models.city import City
+
 
 app = Flask(__name__)
 
@@ -35,8 +35,6 @@ def delete_session(exception=None):
 def list_cities_states():
     # Get records of the states
     states = storage.all(State).values()
-    # Get records of the cities
-    cities = storage.all(City)
     return render_template('8-cities_by_states.html', states=states)
 
 
