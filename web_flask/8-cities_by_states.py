@@ -10,7 +10,7 @@ Requirements:
          LI tag: description of one State: <state.id>: <B><state.name></B>
 """
 from flask import Flask, render_template
-from models import storage, storage_type
+from models import storage
 from models.state import State
 
 
@@ -29,7 +29,7 @@ def list_cities_states():
     # Get records of the states
     states = storage.all(State).values()
     return render_template(
-        '8-cities_by_states.html', states=states, storage_type=storage_type)
+        '8-cities_by_states.html', states=states)
 
 
 if __name__ == '__main__':
