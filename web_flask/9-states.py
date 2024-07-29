@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 """
 Script starts a Flask web application:
-Requirements:
- - list all states from storage
- - list all cities in a specified state
+Routes:
+ /states - list all states from storage
+ /states/<id> -  list all cities in a specified state
 """
 from flask import Flask, render_template
 from models import storage
@@ -21,6 +21,10 @@ def delete_session(exception=None):
 @app.route('/states', strict_slashes=False)
 @app.route('/states/<id>', strict_slashes=False)
 def list_states_cities(id=None):
+    """
+    Displays a HTML page witha lists of all states if id=None or
+    a list of cities of the specified states.
+    """
     # Get list of states
     states = storage.all(State)
     state_key = None
