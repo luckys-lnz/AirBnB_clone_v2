@@ -4,7 +4,9 @@ This repository is a continuation of the already existing HBNB project. This sta
 
 N:B GET request method is used in all the application routes.
 
-<h2>ROUTES</h2>
+<center><h3>Repository Contents by Project Task</h3> </center>
+|Tasks | Files | Description |
+| ------ | ----- | ----- |
 | 1. / | display "Hello HBNB!"
 | 2. /hbnb | display "HBNB"
 | 3. /c/<text> | display "C" followed by the value of the text variable(replacing undersore _ symbols with a space)
