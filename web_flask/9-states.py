@@ -23,9 +23,10 @@ def delete_session(exception=None):
 def list_states_cities(id=None):
     # Get list of states
     states = storage.all(State)
+    state_key = None
     if id is not None:
-        state_id = "State." + id
-    return render_template('9-states.html', state_id=state_id, states=states)
+        state_key = "State." + id
+    return render_template('9-states.html', state_key=state_key, states=states)
 
 
 if __name__ == '__main__':
